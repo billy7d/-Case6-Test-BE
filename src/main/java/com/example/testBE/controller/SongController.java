@@ -36,7 +36,7 @@ public class SongController {
 
 
 
-    @PostMapping("/uploadMp3")
+    @PostMapping("/uploadmp3")
     public ResponseEntity<Song> uploadSong(@RequestParam("imageFile") MultipartFile multipartFile,Song song){
         Song newSong = new Song();
         Cloudinary cloudinary = new Cloudinary(CLOUDINARY_URL);
@@ -60,19 +60,12 @@ public class SongController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Song> createSong(Song song){
+    public ResponseEntity<Song> createSong(@RequestBody Song song){
         songService.save(song);
-        System.out.println(song.getLinkMp3());
+
         return new ResponseEntity<Song>(song, HttpStatus.OK);
     }
 
-    @GetMapping("/getlastsong")
-    public ResponseEntity<Song> getLastSong(){
-        Iterable<Song> songs = songService.findAll();
-        List<Song> song2 = (List<Song>) songs;
-        Song lastSongOfList = song2.get(song2.size()-1);
-        return new ResponseEntity<Song>(lastSongOfList,HttpStatus.OK);
-    }
 
 
 }
