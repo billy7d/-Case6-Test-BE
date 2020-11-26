@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -28,11 +29,18 @@ public class SongController {
    SongService songService;
 
 
-    @PostMapping("/create")
-    public ResponseEntity<Song> createSong(@RequestParam("imageFile") MultipartFile multipartFile){
+    @GetMapping("")
+    public ResponseEntity<Iterable<Song>> getFile(){
+        return new ResponseEntity<Iterable<Song>>(songService.findAll(),HttpStatus.OK);
+    }
 
-        Cloudinary cloudinary = new Cloudinary(CLOUDINARY_URL);
+
+
+    @PostMapping("/uploadMp3")
+    public ResponseEntity<Song> uploadSong(@RequestParam("imageFile") MultipartFile multipartFile,Song song){
         Song newSong = new Song();
+        Cloudinary cloudinary = new Cloudinary(CLOUDINARY_URL);
+
         try{
             File mp3File = File.createTempFile("test", multipartFile.getOriginalFilename()).toPath().toFile();
             multipartFile.transferTo(mp3File);
@@ -41,19 +49,30 @@ public class SongController {
             JSONObject jsonObject = new JSONObject(responseMp3);
             String urlMp3 = jsonObject.getString("url");
 
-            newSong.setLinkMp3(urlMp3);
+            song.setLinkMp3(urlMp3);
+
         } catch ( IOException e) {
             e.printStackTrace();
             e.getMessage();
         }
-
-
-        songService.save(newSong);
-        return new ResponseEntity<Song>(newSong, HttpStatus.OK);
+//        songService.save(newSong);
+        return new ResponseEntity<Song>(song, HttpStatus.OK);
     }
 
-    @GetMapping("/getFile")
-    public ResponseEntity<Iterable<Song>> getFile(){
-        return new ResponseEntity<Iterable<Song>>(songService.findAll(),HttpStatus.OK);
+    @PostMapping("/create")
+    public ResponseEntity<Song> createSong(Song song){
+        songService.save(song);
+        System.out.println(song.getLinkMp3());
+        return new ResponseEntity<Song>(song, HttpStatus.OK);
     }
+
+    @GetMapping("/getlastsong")
+    public ResponseEntity<Song> getLastSong(){
+        Iterable<Song> songs = songService.findAll();
+        List<Song> song2 = (List<Song>) songs;
+        Song lastSongOfList = song2.get(song2.size()-1);
+        return new ResponseEntity<Song>(lastSongOfList,HttpStatus.OK);
+    }
+
+
 }
