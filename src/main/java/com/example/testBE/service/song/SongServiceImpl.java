@@ -1,7 +1,8 @@
-package com.example.testBE.service;
+package com.example.testBE.service.song;
 
 import com.example.testBE.model.Song;
 import com.example.testBE.repository.SongRepo;
+import com.example.testBE.service.song.SongService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +12,8 @@ import java.util.Optional;
 public class SongServiceImpl implements SongService {
 
     @Autowired
-    SongRepo songRepo;
+    private SongRepo songRepo;
+
     @Override
     public Iterable<Song> findAll() {
         return songRepo.findAll();

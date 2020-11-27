@@ -3,8 +3,10 @@ package com.example.testBE.controller;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.example.testBE.model.Singer;
 import com.example.testBE.model.Song;
-import com.example.testBE.service.SongService;
+import com.example.testBE.service.singer.SingerService;
+import com.example.testBE.service.song.SongService;
 import org.cloudinary.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -26,7 +27,10 @@ public class SongController {
     final String CLOUDINARY_URL = "cloudinary://292468957674773:lcLLj26C4VX82SHtbJrjZkcwhas@dos9lacv4";
 
    @Autowired
-   SongService songService;
+   private SongService songService;
+
+   @Autowired
+   private SingerService singerService;
 
 
     @GetMapping("")
@@ -38,7 +42,7 @@ public class SongController {
 
     @PostMapping("/uploadmp3")
     public ResponseEntity<Song> uploadSong(@RequestParam("imageFile") MultipartFile multipartFile,Song song){
-        Song newSong = new Song();
+            Song newSong = new Song();
         Cloudinary cloudinary = new Cloudinary(CLOUDINARY_URL);
 
         try{
@@ -61,6 +65,12 @@ public class SongController {
 
     @PostMapping("/create")
     public ResponseEntity<Song> createSong(@RequestBody Song song){
+
+        for (Long id: song.getSingerValues()){
+            Singer singer = singerService.findSingerById(id).get();
+            song.getSingerList().add(singer);
+        }
+
         songService.save(song);
 
         return new ResponseEntity<Song>(song, HttpStatus.OK);

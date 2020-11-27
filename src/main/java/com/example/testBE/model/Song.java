@@ -1,5 +1,7 @@
 package com.example.testBE.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -7,6 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -47,7 +50,17 @@ public class Song {
         @ManyToMany
         @JoinTable(name = "singer_song", joinColumns = @JoinColumn(name = "song_id"),
                 inverseJoinColumns = @JoinColumn(name = "singer_id"))
-        private List<Singer> singerName;
+        private List<Singer> singerList;
+
+
+        @Transient
+        @ElementCollection
+        private List<Long> singerValues;
+
+        public Song(){
+                singerList = new ArrayList<>();
+        }
+
 
 }
 

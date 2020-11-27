@@ -1,10 +1,10 @@
 package com.example.testBE.repository;
 
-import com.example.testBE.model.Song;
+import com.example.testBE.model.Singer;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface SongRepo extends JpaRepository<Song,Long> {
+public interface SingerRepo extends JpaRepository<Singer,Long> {
 }

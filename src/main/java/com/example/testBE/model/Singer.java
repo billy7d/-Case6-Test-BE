@@ -1,5 +1,6 @@
 package com.example.testBE.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -13,7 +14,7 @@ public class Singer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String Name;
+    private String name;
 
     private String gender;
 
@@ -26,7 +27,8 @@ public class Singer {
     private String band;
 
 
-    @ManyToMany(mappedBy = "singerName")
+    @ManyToMany(mappedBy = "singerList")
+    @JsonIgnore
     private List<Song> songList;
 
     private Long view;
